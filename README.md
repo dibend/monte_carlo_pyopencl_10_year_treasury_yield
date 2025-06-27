@@ -1,35 +1,45 @@
-<h1>📈 Monte Carlo Simulation Web App</h1>
+<h1>📊 Monte Carlo Yield Curve Simulator</h1>
 
-<p>This web application provides a frontend interface to perform Monte Carlo simulations on yield curve data sourced from the U.S. Treasury. It utilizes <strong>Gradio</strong> for the user interface, <strong>Pandas</strong> and <strong>NumPy</strong> for data processing, <strong>Plotly</strong> for interactive plotting, and optionally <strong>PyOpenCL</strong> for GPU acceleration of simulations.</p>
+<p>This application performs interactive Monte Carlo simulations on U.S. Treasury 10-Year yield curve data. It uses <strong>Gradio</strong> for the user interface and <strong>Plotly</strong> for visualization. Optionally, it can leverage <strong>PyOpenCL</strong> for GPU acceleration of simulations.</p>
 
-<h2>🚀 Features</h2>
+<h2>🌐 Data Source</h2>
+<p>This app fetches daily Treasury par yield curve rates from:</p>
+<pre><code>https://home.treasury.gov/resource-center/data-chart-center/interest-rates/daily-treasury-rates.csv/2024/all?type=daily_treasury_yield_curve&amp;field_tdr_date_value_month=202406&amp;page&amp;_format=csv</code></pre>
+<p>It focuses on the <code>10 Yr</code> maturity series.</p>
+
+<h2>🛠 Features</h2>
 <ul>
-  <li>Fetch and process the latest Daily Treasury Yield Curve Rates.</li>
-  <li>Run Monte Carlo simulations on 10-Year yield curve data.</li>
-  <li>GPU acceleration with OpenCL (optional).</li>
-  <li>Interactive visualization of simulation results using Plotly.</li>
+  <li>Dynamic plotting of simulated interest rate paths.</li>
+  <li>Interactive configuration: number of simulations and forecast horizon.</li>
+  <li>Automatic device detection via OpenCL (fallback to NumPy if GPU unavailable).</li>
+  <li>Memory safety checks to prevent excessive allocations on GPU.</li>
 </ul>
 
-<h2>🔧 Installation</h2>
-<p>Clone the repository and install all dependencies using:</p>
-
+<h2>📦 Installation</h2>
+<p>Install the dependencies using:</p>
 <pre><code>pip install -r requirements.txt</code></pre>
 
-<p><em>Note:</em> <code>pyopencl</code> is optional and used for GPU acceleration. If your system supports OpenCL, it will be utilized automatically.</p>
+<p><strong>Note:</strong> <code>pyopencl</code> is optional. If not installed, the app defaults to CPU (NumPy).</p>
 
-<h2>📄 File Overview</h2>
+<h2>▶️ Usage</h2>
+<pre><code>python app.py</code></pre>
+<p>The app will start a Gradio web interface in your browser.</p>
+
+<h2>🧪 Requirements File</h2>
+<p>The <code>requirements.txt</code> should include:</p>
+<pre><code>gradio
+pandas
+numpy
+plotly
+pyopencl  # Optional, only needed for GPU acceleration
+</code></pre>
+
+<h2>📈 Output</h2>
 <ul>
-  <li><strong>app.py</strong> — Main application script with Gradio interface and simulation logic.</li>
-  <li><strong>requirements.txt</strong> — Python dependencies list.</li>
+  <li>Up to 500,000 simulation paths</li>
+  <li>Project up to 3 years (1095 days)</li>
+  <li>Includes confidence intervals and mean projections</li>
 </ul>
 
-<h2>⚙️ Usage</h2>
-<pre><code>python app.py</code></pre>
-<p>Then, follow the Gradio URL provided in the terminal to launch the web app in your browser.</p>
-
-<h2>📡 Data Source</h2>
-<p>Data is fetched from the U.S. Treasury:</p>
-<blockquote><a href="https://home.treasury.gov/resource-center/data-chart-center/interest-rates">https://home.treasury.gov/resource-center/data-chart-center/interest-rates</a></blockquote>
-
-<h2>📜 License</h2>
-<p>This project is open for educational and research purposes. Refer to the code comments and data source license for more details.</p>
+<h2>🔒 License</h2>
+<p>This project is intended for research and educational use. Please respect the U.S. Treasury data terms of use.</p>
