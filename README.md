@@ -1,3 +1,4 @@
+<img src="https://github.com/dibend/monte_carlo_pyopencl_10_year_treasury_yield/blob/main/10y-treasury-yield.png?raw=true" width="1000" height="700">
 <h1>📊 Monte Carlo Yield Curve Simulator</h1>
 
 <p>This application performs interactive Monte Carlo simulations on U.S. Treasury 10-Year yield curve data. It uses <strong>Gradio</strong> for the user interface and <strong>Plotly</strong> for visualization. Optionally, it can leverage <strong>PyOpenCL</strong> for GPU acceleration of simulations.</p>
