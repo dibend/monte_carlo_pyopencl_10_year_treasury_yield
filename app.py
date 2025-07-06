@@ -227,33 +227,66 @@ def generate_simulation_plot(device_string, num_simulations, num_days):
     return fig
 
 # --- Build and Launch Gradio App ---
-with gr.Blocks(theme=gr.themes.Soft()) as demo:
-    gr.Markdown("# Monte Carlo Simulation with OpenCL Acceleration and Plotly")
-    gr.Markdown(
-        f"This tool runs a Monte Carlo simulation on the **{SERIES_TO_SIMULATE} Treasury Yield** using data from a `home.treasury.gov` CSV link. "
-        "You can select your GPU or CPU via OpenCL for accelerated computation. The plot is interactive."
-    )
 
-    with gr.Row():
-        with gr.Column(scale=1):
-            device_selector = gr.Dropdown(choices=get_opencl_devices(), value=get_opencl_devices()[0], label="Select Computation Device")
-            # UPDATED: Lowered the max to a more reasonable value to avoid instant memory errors.
-            num_simulations_slider = gr.Slider(minimum=250, maximum=500000, value=5000, step=250, label="Number of Simulations")
-            num_days_slider = gr.Slider(minimum=30, maximum=1095, value=365, step=5, label="Number of Days to Project")
-            run_button = gr.Button("Run Simulation", variant="primary")
+def build_interface():
+    """Constructs and returns the Gradio Blocks interface without launching it.
+    Keeping this in a separate function prevents the UI from being built at
+    import-time, which is important for unit testing and re-usability.
+    """
 
-        with gr.Column(scale=3):
-            plot_output = gr.Plot(label="Simulation Results")
+    with gr.Blocks(theme=gr.themes.Soft()) as demo:
+        gr.Markdown("# Monte Carlo Simulation with OpenCL Acceleration and Plotly")
+        gr.Markdown(
+            f"This tool runs a Monte Carlo simulation on the **{SERIES_TO_SIMULATE} Treasury Yield** using data from a `home.treasury.gov` CSV link. "
+            "You can select your GPU or CPU via OpenCL for accelerated computation. The plot is interactive."
+        )
 
-    run_button.click(
-        fn=generate_simulation_plot,
-        inputs=[device_selector, num_simulations_slider, num_days_slider],
-        outputs=plot_output
-    )
+        with gr.Row():
+            with gr.Column(scale=1):
+                device_selector = gr.Dropdown(
+                    choices=get_opencl_devices(),
+                    value=get_opencl_devices()[0],
+                    label="Select Computation Device",
+                )
+                # Lowered the max to a more reasonable value to avoid instant memory errors.
+                num_simulations_slider = gr.Slider(
+                    minimum=250,
+                    maximum=500000,
+                    value=5000,
+                    step=250,
+                    label="Number of Simulations",
+                )
+                num_days_slider = gr.Slider(
+                    minimum=30,
+                    maximum=1095,
+                    value=365,
+                    step=5,
+                    label="Number of Days to Project",
+                )
+                run_button = gr.Button("Run Simulation", variant="primary")
+
+            with gr.Column(scale=3):
+                plot_output = gr.Plot(label="Simulation Results")
+
+        run_button.click(
+            fn=generate_simulation_plot,
+            inputs=[device_selector, num_simulations_slider, num_days_slider],
+            outputs=plot_output,
+        )
+
+    return demo
+
 
 if __name__ == "__main__":
     if not PYOPENCL_AVAILABLE:
-        print("\nNOTE: PyOpenCL is not installed. The device selector will only show the 'CPU (Numpy)' option.")
-        print("To enable GPU acceleration, please install it using: pip install pyopencl\n")
-    # ADDED: share=True and debug=True as requested by user's traceback.
+        print(
+            "\nNOTE: PyOpenCL is not installed. The device selector will only show the 'CPU (Numpy)' option."
+        )
+        print(
+            "To enable GPU acceleration, please install it using: pip install pyopencl\n"
+        )
+
+    # Build the interface and launch it.
+    demo = build_interface()
+    # share=True and debug=True as requested by user's traceback.
     demo.launch(share=True, debug=True)
